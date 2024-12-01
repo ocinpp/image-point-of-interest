@@ -1,45 +1,30 @@
 <template>
   <div
-    class="relative overflow-hidden rounded-lg shadow-2xl will-change-transform"
-    :class="{ 'h-[calc(100vh-8rem)]': useModalLayout }"
+    class="relative overflow-hidden will-change-transform"
+    :class="{ 'h-screen': !useModalLayout }"
   >
-    <div
-      class="transition-all duration-200 ease-in-out h-full"
-      :style="{
-        transform: activePointId !== null ? 'scale(2)' : 'scale(1)',
-        transformOrigin: activePoint
-          ? `${activePoint.x}% ${activePoint.y}%`
-          : 'center',
-      }"
-    >
-      <img
-        :src="image"
-        alt="Landscape with points of interest"
-        class="w-full h-full object-cover"
-      />
-    </div>
+    <img
+      :src="image"
+      alt="Landscape with points of interest"
+      class="w-full h-full object-cover"
+    />
     <div
       v-for="point in points"
       :key="point.id"
       :style="{ left: `${point.x}%`, top: `${point.y}%` }"
-      class="absolute w-8 h-8 -ml-4 -mt-4 border-2 border-purple-500 rounded-full cursor-pointer transition-all duration-200 ease-in-out will-change-transform will-change-opacity hover:scale-125"
+      class="absolute w-8 h-8 -ml-4 -mt-4 rounded-full cursor-pointer transition-all duration-200 ease-in-out will-change-transform will-change-opacity hover:scale-125"
       :class="{
-        'scale-125': activePointId === point.id,
-        'opacity-0': activePointId !== null && activePointId !== point.id,
+        'animate-pulse': !useModalLayout || activePointId !== point.id,
       }"
       @click="$emit('point-click', point)"
-      @mouseenter="hoveredPointId = point.id"
-      @mouseleave="hoveredPointId = null"
     >
-      <div class="w-full h-full rounded-full bg-purple-500 bg-opacity-30">
-        <span class="sr-only">{{ point.title }}</span>
-      </div>
+      <div class="w-full h-full rounded-full bg-white opacity-75"></div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   image: {
@@ -62,10 +47,23 @@ const props = defineProps({
 
 const emit = defineEmits(["point-click"]);
 
-const hoveredPointId = ref(null);
-
 const activePointId = computed(() => props.zoomedPointId);
-const activePoint = computed(() =>
-  props.points.find((p) => p.id === activePointId.value)
-);
 </script>
+
+<style scoped>
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>

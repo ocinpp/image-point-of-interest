@@ -1,36 +1,39 @@
 <template>
   <div
-    class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 p-8 font-sans"
+    class="min-h-screen bg-gradient-to-br from-purple-100 to-indigo-200 font-sans"
   >
-    <div class="max-w-7xl mx-auto">
-      <h1 class="text-4xl font-bold text-center mb-8 text-purple-800">
+    <div class="relative">
+      <Photo
+        :image="image"
+        :points="points"
+        :zoomed-point-id="zoomedPointId"
+        :use-modal-layout="useModalLayout"
+        @point-click="handlePointClick"
+      />
+      <h1
+        v-if="!useModalLayout"
+        class="absolute top-4 left-4 text-4xl font-bold text-white shadow-text"
+      >
         Discover Nature's Wonders
       </h1>
-      <div :class="{ flex: !useModalLayout }">
-        <div :class="{ 'w-7/10': !useModalLayout, 'w-full': useModalLayout }">
-          <Photo
-            :image="image"
-            :points="points"
-            :zoomed-point-id="zoomedPointId"
-            :use-modal-layout="useModalLayout"
-            @point-click="handlePointClick"
-          />
-        </div>
-        <div v-if="!useModalLayout" class="w-3/10 pl-4">
-          <PointInfo
-            v-if="selectedPoint"
-            :point="selectedPoint"
-            :show-close-button="false"
-          />
-        </div>
+      <div
+        v-if="!useModalLayout"
+        class="absolute top-0 right-0 w-3/10 h-full bg-black bg-opacity-50 overflow-y-auto"
+      >
+        <Accordion
+          :points="points"
+          :active-point="selectedPoint"
+          @select-point="handlePointClick"
+          @next-point="handleNextPoint"
+        />
       </div>
-      <Modal
-        v-if="useModalLayout && selectedPoint"
-        :point="selectedPoint"
-        @close="handleCloseModal"
-        @next-point="handleNextPoint"
-      />
     </div>
+    <Modal
+      v-if="useModalLayout && selectedPoint"
+      :point="selectedPoint"
+      @close="handleCloseModal"
+      @next-point="handleNextPoint"
+    />
   </div>
 </template>
 
@@ -38,7 +41,7 @@
 import { ref } from "vue";
 import Photo from "./components/Photo.vue";
 import Modal from "./components/Modal.vue";
-import PointInfo from "./components/PointInfo.vue";
+import Accordion from "./components/Accordion.vue";
 
 const image = "https://images.unsplash.com/photo-1506744038136-46273834b3fb";
 
@@ -51,6 +54,7 @@ const points = [
     description:
       "A majestic mountain peak rising above the clouds, showcasing nature's grandeur.",
     detailImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
+    icon: "mountain",
   },
   {
     id: 2,
@@ -60,6 +64,7 @@ const points = [
     description:
       "A calm lake reflecting the surrounding landscape, offering a peaceful retreat.",
     detailImage: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce",
+    icon: "droplet",
   },
   {
     id: 3,
@@ -69,12 +74,13 @@ const points = [
     description:
       "A vibrant green forest teeming with life, representing the Earth's biodiversity.",
     detailImage: "https://images.unsplash.com/photo-1448375240586-882707db888b",
+    icon: "tree",
   },
 ];
 
 const selectedPoint = ref(null);
 const zoomedPointId = ref(null);
-const useModalLayout = ref(true); // Control layout here: true for modal, false for side-by-side
+const useModalLayout = ref(false); // Control layout here: true for modal, false for side-by-side
 
 const handlePointClick = (point) => {
   selectedPoint.value = point;
@@ -105,6 +111,10 @@ const handleNextPoint = () => {
 }
 .w-3\/10 {
   width: 30%;
+}
+
+.shadow-text {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .will-change-transform {
