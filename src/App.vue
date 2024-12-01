@@ -8,6 +8,7 @@
         :points="points"
         :zoomed-point-id="zoomedPointId"
         :use-modal-layout="useModalLayout"
+        :zoom-level="zoomLevel"
         @point-click="handlePointClick"
       />
       <h1
@@ -16,17 +17,20 @@
       >
         Discover Nature's Wonders
       </h1>
-      <div
-        v-if="!useModalLayout"
-        class="absolute top-0 right-0 w-3/10 h-full bg-black bg-opacity-50 overflow-y-auto"
-      >
-        <Accordion
-          :points="points"
-          :active-point="selectedPoint"
-          @select-point="handlePointClick"
-          @next-point="handleNextPoint"
-        />
-      </div>
+      <Transition name="slide">
+        <div
+          v-if="!useModalLayout && showAccordion"
+          class="absolute top-0 right-0 w-3/10 h-full bg-black bg-opacity-50 overflow-y-auto"
+        >
+          <Accordion
+            :points="points"
+            :active-point="selectedPoint"
+            @select-point="handlePointClick"
+            @next-point="handleNextPoint"
+            @close="closeAccordion"
+          />
+        </div>
+      </Transition>
     </div>
     <Modal
       v-if="useModalLayout && selectedPoint"
@@ -74,17 +78,20 @@ const points = [
     description:
       "A vibrant green forest teeming with life, representing the Earth's biodiversity.",
     detailImage: "https://images.unsplash.com/photo-1448375240586-882707db888b",
-    icon: "tree",
+    icon: "tree-pine",
   },
 ];
 
 const selectedPoint = ref(null);
 const zoomedPointId = ref(null);
 const useModalLayout = ref(false); // Control layout here: true for modal, false for side-by-side
+const showAccordion = ref(false);
+const zoomLevel = ref(400); // Zoom level for side-by-side mode
 
 const handlePointClick = (point) => {
   selectedPoint.value = point;
   zoomedPointId.value = point.id;
+  showAccordion.value = true;
 };
 
 const handleCloseModal = () => {
@@ -96,6 +103,12 @@ const handleNextPoint = () => {
   const currentIndex = points.findIndex((p) => p.id === zoomedPointId.value);
   const nextIndex = (currentIndex + 1) % points.length;
   handlePointClick(points[nextIndex]);
+};
+
+const closeAccordion = () => {
+  showAccordion.value = false;
+  selectedPoint.value = null;
+  zoomedPointId.value = null;
 };
 </script>
 
@@ -123,5 +136,15 @@ const handleNextPoint = () => {
 
 .will-change-opacity {
   will-change: opacity;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease-in-out;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(100%);
 }
 </style>

@@ -1,20 +1,23 @@
 <template>
-  <div
-    class="relative overflow-hidden will-change-transform"
-    :class="{ 'h-screen': !useModalLayout }"
-  >
-    <img
-      :src="image"
-      alt="Landscape with points of interest"
-      class="w-full h-full object-cover"
-    />
+  <div class="relative overflow-hidden will-change-transform h-screen">
+    <div
+      class="w-full h-full transition-all duration-500 ease-in-out"
+      :style="imageStyle"
+    >
+      <img
+        :src="image"
+        alt="Landscape with points of interest"
+        class="w-full h-full object-cover"
+      />
+    </div>
     <div
       v-for="point in points"
       :key="point.id"
-      :style="{ left: `${point.x}%`, top: `${point.y}%` }"
+      :style="pointStyle(point)"
       class="absolute w-8 h-8 -ml-4 -mt-4 rounded-full cursor-pointer transition-all duration-200 ease-in-out will-change-transform will-change-opacity hover:scale-125"
       :class="{
-        'animate-pulse': !useModalLayout || activePointId !== point.id,
+        'animate-pulse': !useModalLayout && !zoomedPointId,
+        hidden: !useModalLayout && zoomedPointId,
       }"
       @click="$emit('point-click', point)"
     >
@@ -43,11 +46,45 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  zoomLevel: {
+    type: Number,
+    default: 200,
+  },
 });
 
 const emit = defineEmits(["point-click"]);
 
-const activePointId = computed(() => props.zoomedPointId);
+const activePoint = computed(() =>
+  props.points.find((p) => p.id === props.zoomedPointId)
+);
+
+const imageStyle = computed(() => {
+  if (props.useModalLayout || !activePoint.value) {
+    return {};
+  }
+  const scale = props.zoomLevel / 100;
+  const x = activePoint.value.x;
+  const y = activePoint.value.y;
+  return {
+    transform: `scale(${scale})`,
+    transformOrigin: `${x}% ${y}%`,
+  };
+});
+
+const pointStyle = (point) => {
+  const baseStyle = { left: `${point.x}%`, top: `${point.y}%` };
+  if (props.useModalLayout || !activePoint.value) {
+    return baseStyle;
+  }
+  const scale = props.zoomLevel / 100;
+  const x = (point.x - activePoint.value.x) * scale + 50;
+  const y = (point.y - activePoint.value.y) * scale + 50;
+  return {
+    ...baseStyle,
+    left: `${x}%`,
+    top: `${y}%`,
+  };
+};
 </script>
 
 <style scoped>
