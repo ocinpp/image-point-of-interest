@@ -1,1 +1,1 @@
-# Photo Points of Interest
+# Image Points of Interest
