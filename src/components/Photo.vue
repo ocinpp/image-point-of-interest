@@ -1,5 +1,8 @@
 <template>
-  <div class="relative overflow-hidden will-change-transform h-screen">
+  <div
+    class="relative overflow-hidden will-change-transform h-screen"
+    @click="$emit('image-click')"
+  >
     <div
       class="w-full h-full transition-all duration-500 ease-in-out"
       :style="imageStyle"
@@ -14,12 +17,16 @@
       v-for="point in points"
       :key="point.id"
       :style="pointStyle(point)"
-      class="absolute w-8 h-8 -ml-4 -mt-4 rounded-full cursor-pointer transition-all duration-200 ease-in-out will-change-transform will-change-opacity hover:scale-125"
+      class="absolute w-12 h-12 -ml-6 -mt-6 rounded-full cursor-pointer transition-all duration-200 ease-in-out will-change-transform will-change-opacity"
       :class="{
-        'animate-pulse': !useModalLayout && !zoomedPointId,
+        'animate-pulse':
+          !useModalLayout && !zoomedPointId && hoveredPointId !== point.id,
+        'scale-150': hoveredPointId === point.id,
         hidden: !useModalLayout && zoomedPointId,
       }"
-      @click="$emit('point-click', point)"
+      @click.stop="$emit('point-click', point)"
+      @mouseenter="hoveredPointId = point.id"
+      @mouseleave="hoveredPointId = null"
     >
       <div class="w-full h-full rounded-full bg-white opacity-75"></div>
     </div>
@@ -27,7 +34,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps({
   image: {
@@ -52,7 +59,9 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["point-click"]);
+const emit = defineEmits(["point-click", "image-click"]);
+
+const hoveredPointId = ref(null);
 
 const activePoint = computed(() =>
   props.points.find((p) => p.id === props.zoomedPointId)

@@ -10,6 +10,7 @@
         :use-modal-layout="useModalLayout"
         :zoom-level="zoomLevel"
         @point-click="handlePointClick"
+        @image-click="handleImageClick"
       />
       <h1
         v-if="!useModalLayout"
@@ -84,9 +85,9 @@ const points = [
 
 const selectedPoint = ref(null);
 const zoomedPointId = ref(null);
-const useModalLayout = ref(false); // Control layout here: true for modal, false for side-by-side
+const useModalLayout = ref(false);
 const showAccordion = ref(false);
-const zoomLevel = ref(400); // Zoom level for side-by-side mode
+const zoomLevel = ref(400);
 
 const handlePointClick = (point) => {
   selectedPoint.value = point;
@@ -109,6 +110,12 @@ const closeAccordion = () => {
   showAccordion.value = false;
   selectedPoint.value = null;
   zoomedPointId.value = null;
+};
+
+const handleImageClick = () => {
+  if (showAccordion.value) {
+    closeAccordion();
+  }
 };
 </script>
 

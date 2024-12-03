@@ -1,3 +1,42 @@
+<script setup>
+import { ref } from "vue";
+import { Mountain, Droplet, TreePine } from "lucide-vue-next";
+
+const props = defineProps({
+  points: {
+    type: Array,
+    required: true,
+  },
+  activePoint: {
+    type: Object,
+    default: null,
+  },
+});
+
+const emit = defineEmits(["select-point", "next-point", "close"]);
+
+const toggleAccordion = (point) => {
+  emit("select-point", point);
+};
+
+const getIcon = (iconName) => {
+  switch (iconName) {
+    case "mountain":
+      return Mountain;
+    case "droplet":
+      return Droplet;
+    case "tree-pine":
+      return TreePine;
+    default:
+      return null;
+  }
+};
+
+const getOptimizedImageUrl = (url) => {
+  return `${url}?q=70&w=500`;
+};
+</script>
+
 <template>
   <div class="p-4 pt-10 relative">
     <button
@@ -49,75 +88,50 @@
           />
         </svg>
       </div>
-      <div
-        v-if="activePoint && activePoint.id === point.id"
-        class="p-4 bg-white bg-opacity-25 rounded-b"
+      <transition
+        enter-active-class="transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 max-h-0"
+        enter-to-class="opacity-100 max-h-[500px]"
+        leave-active-class="transition-all duration-300 ease-in"
+        leave-from-class="opacity-100 max-h-[500px]"
+        leave-to-class="opacity-0 max-h-0"
       >
-        <img
-          :src="point.detailImage"
-          :alt="point.title"
-          class="w-full h-48 object-cover mb-4 rounded"
-        />
-        <p class="text-white mb-4">{{ point.description }}</p>
-        <div class="flex justify-center">
-          <button
-            @click="$emit('next-point')"
-            class="text-white hover:text-gray-300 focus:outline-none"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-8 w-8 animate-bounce"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+        <div
+          v-if="activePoint && activePoint.id === point.id"
+          class="p-4 bg-white bg-opacity-25 rounded-b overflow-hidden"
+        >
+          <img
+            :src="getOptimizedImageUrl(point.detailImage)"
+            :alt="point.title"
+            class="w-full h-48 object-cover mb-4 rounded"
+          />
+          <p class="text-white mb-4">{{ point.description }}</p>
+          <div class="flex justify-center">
+            <button
+              @click="$emit('next-point')"
+              class="text-white hover:text-gray-300 focus:outline-none"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 14l-7 7m0 0l-7-7m7 7V3"
-              />
-            </svg>
-          </button>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8 animate-bounce"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
+      </transition>
     </div>
   </div>
 </template>
-
-<script setup>
-import { Mountain, Droplet, TreePine } from "lucide-vue-next";
-
-const props = defineProps({
-  points: {
-    type: Array,
-    required: true,
-  },
-  activePoint: {
-    type: Object,
-    default: null,
-  },
-});
-
-const emit = defineEmits(["select-point", "next-point", "close"]);
-
-const toggleAccordion = (point) => {
-  emit("select-point", point);
-};
-
-const getIcon = (iconName) => {
-  switch (iconName) {
-    case "mountain":
-      return Mountain;
-    case "droplet":
-      return Droplet;
-    case "tree-pine":
-      return TreePine;
-    default:
-      return null;
-  }
-};
-</script>
 
 <style scoped>
 @keyframes bounce {
