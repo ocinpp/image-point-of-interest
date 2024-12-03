@@ -43,7 +43,8 @@ const getOptimizedImageUrl = (url) => {
   <div class="p-4 pt-10 relative">
     <button
       @click="$emit('close')"
-      class="absolute top-2 right-2 text-white hover:text-gray-300"
+      class="absolute top-2 right-2 text-white hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-white"
+      aria-label="Close accordion"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +64,13 @@ const getOptimizedImageUrl = (url) => {
     <div v-for="point in points" :key="point.id" class="mb-2">
       <div
         @click="toggleAccordion(point)"
-        class="flex items-center justify-between p-2 bg-white bg-opacity-25 rounded cursor-pointer"
+        @keydown.enter="toggleAccordion(point)"
+        @keydown.space.prevent="toggleAccordion(point)"
+        class="flex items-center justify-between p-2 bg-white bg-opacity-25 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-white"
+        tabindex="0"
+        role="button"
+        :aria-expanded="activePoint && activePoint.id === point.id"
+        :aria-controls="`accordion-content-${point.id}`"
       >
         <div class="flex items-center">
           <component
@@ -100,6 +107,7 @@ const getOptimizedImageUrl = (url) => {
       >
         <div
           v-if="activePoint && activePoint.id === point.id"
+          :id="`accordion-content-${point.id}`"
           class="p-4 bg-white bg-opacity-25 rounded-b overflow-hidden"
         >
           <img
@@ -111,7 +119,8 @@ const getOptimizedImageUrl = (url) => {
           <div class="flex justify-center">
             <button
               @click="$emit('next-point')"
-              class="text-white hover:text-gray-300 focus:outline-none"
+              class="text-white hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-white p-2 rounded"
+              aria-label="Next point"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -157,8 +166,10 @@ const getOptimizedImageUrl = (url) => {
   transition: color 0.3s ease;
 }
 
-.description :deep(a:hover) {
+.description :deep(a:hover),
+.description :deep(a:focus) {
   color: #f0f0f0;
   text-decoration: none;
+  outline: none;
 }
 </style>

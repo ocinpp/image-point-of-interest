@@ -27,6 +27,11 @@
       @click.stop="$emit('point-click', point)"
       @mouseenter="hoveredPointId = point.id"
       @mouseleave="hoveredPointId = null"
+      @keydown.enter="$emit('point-click', point)"
+      @keydown.space.prevent="$emit('point-click', point)"
+      tabindex="0"
+      role="button"
+      :aria-label="`Point of interest: ${point.title}`"
     >
       <div class="w-full h-full rounded-full bg-white opacity-75"></div>
     </div>
@@ -111,5 +116,10 @@ const pointStyle = (point) => {
 
 .pulse-animation {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.scale-150:focus {
+  outline: 2px solid white;
+  outline-offset: 2px;
 }
 </style>
