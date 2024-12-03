@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { Mountain, Droplet, TreePine } from "lucide-vue-next";
+import { Mountain, Droplet, TreePine, Flower } from "lucide-vue-next";
 
 const props = defineProps({
   points: {
@@ -27,6 +27,8 @@ const getIcon = (iconName) => {
       return Droplet;
     case "tree-pine":
       return TreePine;
+    case "flower":
+      return Flower;
     default:
       return null;
   }
@@ -105,7 +107,7 @@ const getOptimizedImageUrl = (url) => {
             :alt="point.title"
             class="w-full h-48 object-cover mb-4 rounded"
           />
-          <p class="text-white mb-4">{{ point.description }}</p>
+          <p class="text-white mb-4 description" v-html="point.description"></p>
           <div class="flex justify-center">
             <button
               @click="$emit('next-point')"
@@ -147,5 +149,16 @@ const getOptimizedImageUrl = (url) => {
 }
 .animate-bounce {
   animation: bounce 1s infinite;
+}
+
+.description :deep(a) {
+  color: #ffffff;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.description :deep(a:hover) {
+  color: #f0f0f0;
+  text-decoration: none;
 }
 </style>

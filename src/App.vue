@@ -57,7 +57,7 @@ const points = [
     y: 30,
     title: "Mountain Peak",
     description:
-      "A majestic mountain peak rising above the clouds, showcasing nature's grandeur.",
+      "A <b>majestic mountain peak</b> rising above the clouds, showcasing nature's grandeur. <i>Breathtaking views await!</i>",
     detailImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
     icon: "mountain",
   },
@@ -67,7 +67,7 @@ const points = [
     y: 50,
     title: "Serene Lake",
     description:
-      "A calm lake reflecting the surrounding landscape, offering a peaceful retreat.",
+      "A <b>calm lake</b> reflecting the surrounding landscape, offering a peaceful retreat. <i>Perfect for meditation and relaxation.</i>",
     detailImage: "https://images.unsplash.com/photo-1503614472-8c93d56e92ce",
     icon: "droplet",
   },
@@ -77,9 +77,29 @@ const points = [
     y: 70,
     title: "Lush Forest",
     description:
-      "A vibrant green forest teeming with life, representing the Earth's biodiversity.",
+      "A <b>vibrant green forest</b> teeming with life, representing the Earth's biodiversity. <i>Home to countless species of flora and fauna.</i>",
     detailImage: "https://images.unsplash.com/photo-1448375240586-882707db888b",
     icon: "tree-pine",
+  },
+  {
+    id: 4,
+    x: 40,
+    y: 60,
+    title: "Hidden Waterfall",
+    description:
+      "A <b>secluded waterfall</b> cascading down rocky cliffs, creating a mesmerizing natural spectacle. <i>Listen to the soothing sound of rushing water.</i>",
+    detailImage: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9",
+    icon: "droplet",
+  },
+  {
+    id: 5,
+    x: 75,
+    y: 40,
+    title: "Alpine Meadow",
+    description:
+      "A <b>colorful alpine meadow</b> filled with wildflowers, showcasing the delicate beauty of high-altitude ecosystems. <i>A paradise for botanists and nature lovers.</i> <a href='https://en.wikipedia.org/wiki/Alpine_meadow' target='_blank'>Learn more about alpine meadows</a>.",
+    detailImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
+    icon: "flower",
   },
 ];
 

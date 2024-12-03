@@ -17,9 +17,9 @@
       v-for="point in points"
       :key="point.id"
       :style="pointStyle(point)"
-      class="absolute w-12 h-12 -ml-6 -mt-6 rounded-full cursor-pointer transition-all duration-200 ease-in-out will-change-transform will-change-opacity"
+      class="absolute w-12 h-12 -ml-6 -mt-6 rounded-full cursor-pointer transition-all duration-300 ease-in-out will-change-transform will-change-opacity"
       :class="{
-        'animate-pulse':
+        'pulse-animation':
           !useModalLayout && !zoomedPointId && hoveredPointId !== point.id,
         'scale-150': hoveredPointId === point.id,
         hidden: !useModalLayout && zoomedPointId,
@@ -100,16 +100,16 @@ const pointStyle = (point) => {
 @keyframes pulse {
   0%,
   100% {
-    opacity: 0.5;
     transform: scale(1);
+    opacity: 0.5;
   }
   50% {
-    opacity: 1;
     transform: scale(1.1);
+    opacity: 1;
   }
 }
 
-.animate-pulse {
+.pulse-animation {
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>
